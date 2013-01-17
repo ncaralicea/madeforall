@@ -2,12 +2,14 @@ package org.madeforall.extractor
 
 import scala.util.matching.Regex
 
-trait Recognizable
 
 /**
  * @author Nicolae Caralicea
  * @version 1.0, 16/01/2013
  */
+
+trait Recognizable
+
 trait RecognitionPattern {
   val regexPattern: Regex
   def recognize(value: String): Option[Recognizable]
