@@ -1,0 +1,4 @@
+madeforall
+==========
+
+Multi-purpose repository
