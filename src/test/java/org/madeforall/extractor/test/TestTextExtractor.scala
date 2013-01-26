@@ -2,9 +2,6 @@ package org.madeforall.extractor.test
 
 import org.scalatest._
 import org.scalatest.matchers._
-
-import scala.util.matching.Regex
-
 import org.madeforall.extractor._
 
 /**
