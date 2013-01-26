@@ -10,13 +10,13 @@ import org.madeforall.graph.mst.prim._
 class TestMst extends FlatSpec with ShouldMatchers {
     
   "The minimal spanning resulted whn using the Prim's alghorith" should "be like" in {
-    val graph: UndirectedGraph = UndirectedGraph(
+    val graph: UndirectedGraph[Double] = UndirectedGraph(
       List(
         Node("A"), Node("B"), Node("C"), Node("D"),
         Node("E"), Node("F"), Node("G"), Node("H"),
         Node("M"), Node("N")),
       List(
-        Edge("A", "B", 9),
+        Edge("A", "B", 9.0),
         Edge("A", "F", 6),
         Edge("A", "G", 3),
         Edge("B", "G", 9),
@@ -44,4 +44,5 @@ class TestMst extends FlatSpec with ShouldMatchers {
         List(Edge("B","M",8), Edge("C","N",3), Edge("N","D",1), Edge("D","E",4), Edge("E","M",7), Edge("M","H",8), Edge("F","H",2), 
             Edge("H","G",2), Edge("G","A",3))))
   }
+    
 }
