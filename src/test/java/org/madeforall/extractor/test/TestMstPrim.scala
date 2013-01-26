@@ -16,7 +16,7 @@ class TestMst extends FlatSpec with ShouldMatchers {
         Node("E"), Node("F"), Node("G"), Node("H"),
         Node("M"), Node("N")),
       List(
-        Edge("A", "B", 9.0),
+        Edge("A", "B", 19.0),
         Edge("A", "F", 6),
         Edge("A", "G", 3),
         Edge("B", "G", 9),
