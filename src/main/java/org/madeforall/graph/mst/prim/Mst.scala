@@ -19,14 +19,10 @@ case class UndirectedGraph[T <% Ordered[T]](nodes: List[Node], edgetList: List[E
       case _ =>
         val minCostEdge = minCost(cost(leftNodes, mst)) // xNode belongs to leftNodes, and yNode belongs to mst
         if (minCostEdge == None) throw new Error("disconnected graph")
-        val updatedLeftNodes =
-          if (minCostEdge != None) leftNodes diff List(minCostEdge.get.xNode) else leftNodes
-        val updatedMst =
-          if (minCostEdge != None)
-            UndirectedGraph(
+        val updatedLeftNodes = leftNodes diff List(minCostEdge.get.xNode)
+        val updatedMst = UndirectedGraph(
               minCostEdge.get.xNode :: mst.nodes,
               toEdge(minCostEdge.get) :: mst.edgetList)
-          else mst
         computeMinimumSpanningTree(updatedLeftNodes, updatedMst)
     }
   }
