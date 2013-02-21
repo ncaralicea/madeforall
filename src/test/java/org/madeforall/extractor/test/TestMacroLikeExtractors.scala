@@ -59,14 +59,28 @@ class TextMacroLikeExtractorSpec extends FlatSpec with ShouldMatchers {
       - 514-232-2647 -jjj
 	  """
 
+  val substitutedText = """
+    Nicolae is at home. 
+	  -<<noise>>- and email: abc@xyz.xy
+	  -@@noise@-	  <a href="http://www.abc.com/">Visit abc</a> 	  -noise-
+    
+		  blah ...  [abc] blah...
+		  [efg]
+	  -noise-href..s.s.
+      - 514-232-2647 -jjj
+	  """
+    
+    
   val expectedPropertyNameList = List(MacroProperty("abc"), MacroProperty("efg"))
 
-  "A text extractor using an MacroPropertyRecognitionPattern" should "extract MacroProperties from a text" in {
+  "A text extractor using a MacroPropertyRecognitionPattern" should "extract MacroProperties from a text" in {
     val recog = RecognizableItemsExtractor(List(MacroPropertyRecognitionPattern))
     val macroPropertyList = recog.analyzeText(textToAnalyze)
     assert(macroPropertyList === expectedPropertyNameList)
-    
-    val substituted = recog.substitute(textToAnalyze)
-    println(substituted)    
   }
+  "A text extractor using a MacroPropertyRecognitionPattern" should "substitute each MacroProperty from a text" in {
+    val recog = RecognizableItemsExtractor(List(MacroPropertyRecognitionPattern))
+    val substituted = recog.substitute(textToAnalyze)
+    assert(substitutedText === substituted)
+  }  
 }
