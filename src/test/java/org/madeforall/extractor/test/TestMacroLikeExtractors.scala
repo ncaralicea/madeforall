@@ -4,6 +4,11 @@ import org.scalatest._
 import org.scalatest.matchers._
 import org.madeforall.extractor._
 
+/**
+ * @author Nicolae Caralicea
+ * @version 1.0, 16/01/2013
+ */
+
 case class MacroProperty(propertyName: String) extends RecognizeAndSubstituteAble {
   override def toString() = {
     "propertyName" + " --> " + propertyName

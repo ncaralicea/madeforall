@@ -2,6 +2,12 @@ package org.madeforall.extractor.test
 
 import org.madeforall.extractor._
 
+
+/**
+ * @author Nicolae Caralicea
+ * @version 1.0, 16/01/2013
+ */
+
 case class Email(user: String, domain: String) extends RecognizeAndSubstituteAble {
   override def toString() = {
     user + "@" + domain
