@@ -11,6 +11,7 @@ import org.madeforall.extractor._
 class TextExtractorSpec extends FlatSpec with ShouldMatchers {
 
   val textToAnalyze = """
+    Nicolae is at home. 
 	  -<<noise>>- and email: abc@xyz.xy
 	  -@@noise@-	  <a href="http://www.abc.com/">Visit abc</a> 	  -noise-
 	  -noise-href..s.s.

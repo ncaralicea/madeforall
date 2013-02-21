@@ -13,11 +13,13 @@ case class UndirectedGraph[T <% Ordered[T]](nodes: List[Node], edgetList: List[E
   def computeMinimumSpanningTreeUsingPrim(): UndirectedGraph[T] =
     computeMinimumSpanningTree(nodes.tail, UndirectedGraph(List(nodes.head), Nil))
 
-  private def computeMinimumSpanningTree(leftNodes: List[Node], mst: UndirectedGraph[T]): UndirectedGraph[T] = {
+  private def computeMinimumSpanningTree(leftNodes: List[Node], mst: UndirectedGraph[T]): 
+	  UndirectedGraph[T] = {
     leftNodes match {
       case Nil => mst
       case _ =>
-        val minCostEdge = minCost(cost(leftNodes, mst)) // xNode belongs to leftNodes, and yNode belongs to mst
+        // xNode belongs to leftNodes, and yNode belongs to mst
+        val minCostEdge = minCost(cost(leftNodes, mst))
         if (minCostEdge == None) throw new Error("disconnected graph")
         val updatedLeftNodes = leftNodes diff List(minCostEdge.get.xNode)
         val updatedMst = UndirectedGraph(
@@ -30,13 +32,15 @@ case class UndirectedGraph[T <% Ordered[T]](nodes: List[Node], edgetList: List[E
   private def toEdge[T <% Ordered[T]](nodesEdge: NodesEdge[T]): Edge[T] =
     Edge(nodesEdge.xNode.name, nodesEdge.yNode.name, nodesEdge.cost)
 
-  private def cost(outsideNodes: List[Node], graph: UndirectedGraph[T]): List[NodesEdge[T]] =
+  private def cost(outsideNodes: List[Node], graph: UndirectedGraph[T]): 
+	  List[NodesEdge[T]] =
     for {
       node <- outsideNodes
       minCostEdgeNodeToGraph <- minCostEdgeOfNodeToGraph(node, graph.nodes)
     } yield minCostEdgeNodeToGraph
 
-  private def minCost[T <% Ordered[T]](nodesEdgeList: List[NodesEdge[T]]): Option[NodesEdge[T]] = {
+  private def minCost[T <% Ordered[T]](nodesEdgeList: List[NodesEdge[T]]): 
+	  Option[NodesEdge[T]] = {
     val min: Option[NodesEdge[T]] = None
     nodesEdgeList.foldLeft(min)((comp, itm) =>
       if (comp != None) {
@@ -54,7 +58,8 @@ case class UndirectedGraph[T <% Ordered[T]](nodes: List[Node], edgetList: List[E
     if (costItem != Nil) Some(costItem.head.cost) else None
   }
 
-  private def minCostEdgeOfNodeToGraph(node: Node, graph: List[Node]): Option[NodesEdge[T]] = {
+  private def minCostEdgeOfNodeToGraph(node: Node, graph: List[Node]): 
+	  Option[NodesEdge[T]] = {
     val edges = for {
       n <- graph
       cost <- cost(n, node)
