@@ -18,10 +18,8 @@ trait RecognizeAndSubstituteAble extends Recognizable with Substitutable
 trait RecognitionPattern {
   val regexPattern: Regex
   def recognize(value: String): Option[RecognizeAndSubstituteAble]
-  def substituteString(str: String): String = str
   def replaceAllIn(str: String, substFun: String => String) =
-    regexPattern.replaceAllIn(str, m =>
-      substituteString(substFun(m.group(0))))
+    regexPattern.replaceAllIn(str, m => substFun(m.group(0)))      
 }
 
 case class RecognizableItemsExtractor(recognitionPatterns: List[RecognitionPattern]) {

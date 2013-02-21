@@ -15,7 +15,7 @@ case class MacroProperty(propertyName: String) extends RecognizeAndSubstituteAbl
   }
   override def substitute(str: String): String =
     MacroPropertyRecognitionPattern.recognizeAndSubstitute(str)
-  
+
 }
 object MacroPropertyRecognitionPattern extends RecognitionPattern {
   // The extraction method (mandatory)
@@ -26,7 +26,10 @@ object MacroPropertyRecognitionPattern extends RecognitionPattern {
   // macro_extract_property regex
   val regexPattern = """#macro_extract_property\((.*)\)""".r
 
-  def recognize(value: String): Option[RecognizeAndSubstituteAble] = {
+  def recognize(value: String): Option[RecognizeAndSubstituteAble] =
+    doRecognize(value)
+
+  private def doRecognize(value: String): Option[MacroProperty] = {
     value match {
       case MacroPropertyRecognitionPattern(propertyName) =>
         Some(MacroProperty(propertyName))
@@ -35,12 +38,11 @@ object MacroPropertyRecognitionPattern extends RecognitionPattern {
     }
   }
   def recognizeAndSubstitute(str: String): String = {
-    def substituteString(toSubstitute: String): String = {
-      toSubstitute match {
-        case MacroPropertyRecognitionPattern(propertyName) => "[" + propertyName + "]"
+    def substituteString(toSubstitute: String): String =
+      doRecognize(toSubstitute) match {
+        case Some(MacroProperty(propertyName)) => "[" + propertyName + "]"
         case _ => toSubstitute
       }
-    }
     replaceAllIn(str, substituteString)
   }
 }
