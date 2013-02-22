@@ -8,10 +8,11 @@ import org.madeforall.extractor._
  * @version 1.0, 16/01/2013
  */
 
-case class Email(user: String, domain: String) extends RecognizeAndSubstituteAble {
+case class Email(user: String, domain: String) extends RecognizableAndSubstitutable {
   override def toString() = {
     user + "@" + domain
   }
+  val recognitionPattern = EmailRecognitionPattern
 }
 object EmailRecognitionPattern extends RecognitionPattern {
   // The extraction method
@@ -22,7 +23,7 @@ object EmailRecognitionPattern extends RecognitionPattern {
   // email regex
   val regexPattern = """(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b""".r
 
-  def recognize(value: String): Option[RecognizeAndSubstituteAble] = {
+  def recognize(value: String): Option[RecognizableAndSubstitutable] = {
     value match {
       case EmailRecognitionPattern(user, domain) =>
         Some(Email(user, domain))
@@ -32,10 +33,11 @@ object EmailRecognitionPattern extends RecognitionPattern {
   }
 }
 
-case class Phone(areaCode: String, centralOffice: String, stationNumber: String) extends RecognizeAndSubstituteAble {
+case class Phone(areaCode: String, centralOffice: String, stationNumber: String) extends RecognizableAndSubstitutable {
   override def toString() = {
     areaCode + "-" + centralOffice + "-" + stationNumber
   }
+  val recognitionPattern = PhoneRecognitionPattern
 }
 
 // the area code and between groups of digits within a telephone number Canada: 819-555-5555
@@ -48,7 +50,7 @@ object PhoneRecognitionPattern extends RecognitionPattern {
   // phone number regex
   val regexPattern = """(?i)\b[0-9]{3}-[0-9]{3}-[0-9]{4}\b""".r
 
-  def recognize(value: String): Option[RecognizeAndSubstituteAble] = {
+  def recognize(value: String): Option[RecognizableAndSubstitutable] = {
     value match {
       case PhoneRecognitionPattern(areaCode, centralOffice, stationNumber) =>
         Some(Phone(areaCode, centralOffice, stationNumber))
@@ -58,10 +60,11 @@ object PhoneRecognitionPattern extends RecognitionPattern {
   }
 }
 
-case class Link(link: String, text: String) extends RecognizeAndSubstituteAble {
+case class Link(link: String, text: String) extends RecognizableAndSubstitutable {
   override def toString() = {
     link + " --> " + text
   }
+  val recognitionPattern = LinkRecognitionPattern
 }
 
 object LinkRecognitionPattern extends RecognitionPattern {
@@ -73,7 +76,7 @@ object LinkRecognitionPattern extends RecognitionPattern {
   // html link regex
   val regexPattern = """<a href=['"]([^"']*)['"].*>(.*)</a""".r
 
-  def recognize(value: String): Option[RecognizeAndSubstituteAble] = {
+  def recognize(value: String): Option[RecognizableAndSubstitutable] = {
     value match {
       case LinkRecognitionPattern(link, text) =>
         Some(Link(link, text))

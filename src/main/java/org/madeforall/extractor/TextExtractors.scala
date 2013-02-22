@@ -7,32 +7,38 @@ import scala.util.matching.Regex
  * @version 1.0, 16/01/2013
  */
 
-trait Substitutable {
-  def substitute(str: String): String = str
+
+trait Recognizable {
+  val recognitionPattern: RecognitionPattern
 }
 
-trait Recognizable
-
-trait RecognizeAndSubstituteAble extends Recognizable with Substitutable
+trait RecognizableAndSubstitutable extends Recognizable {
+  def recognizeAndSubstitute(str: String): String = 
+    recognitionPattern.recognizeAndSubstitute(str)
+}
 
 trait RecognitionPattern {
   val regexPattern: Regex
-  def recognize(value: String): Option[RecognizeAndSubstituteAble]
+  def recognize(value: String): Option[RecognizableAndSubstitutable]
   def replaceAllIn(str: String, substFun: String => String) =
-    regexPattern.replaceAllIn(str, m => substFun(m.group(0)))      
+    regexPattern.replaceAllIn(str, m => substFun(m.group(0)))
+  def recognizeAndSubstitute(str: String): String =
+    str
 }
 
 case class RecognizableItemsExtractor(recognitionPatterns: List[RecognitionPattern]) {
-  def analyzeText(text: String): List[RecognizeAndSubstituteAble] =
-    recognitionPatterns.foldLeft(List[RecognizeAndSubstituteAble]())((computed, item) => {
+  def analyzeText(text: String): List[RecognizableAndSubstitutable] =
+    recognitionPatterns.foldLeft(List[RecognizableAndSubstitutable]())((computed, item) => {
       val matches = for {
         s <- item.regexPattern findAllIn text
         recognized <- item.recognize(s)
       } yield recognized
       computed ::: matches.toList
     })
-  def substitute(text: String): String =
-    analyzeText(text).foldLeft(text)((computed, item) => item.substitute(computed))
+  def makeSubstitutions(text: String): String =
+    analyzeText(text).foldLeft(text)((computed, item) =>      
+      item.recognizeAndSubstitute(computed)
+  )
 
   def filterByType[T <: Recognizable](t: List[Recognizable])(implicit mf: Manifest[T]) =
     t.filter(e => mf.erasure.isInstance(e))

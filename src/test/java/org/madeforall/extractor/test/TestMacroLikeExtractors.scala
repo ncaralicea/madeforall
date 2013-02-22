@@ -9,13 +9,8 @@ import org.madeforall.extractor._
  * @version 1.0, 16/01/2013
  */
 
-case class MacroProperty(propertyName: String) extends RecognizeAndSubstituteAble {
-  override def toString() = {
-    "propertyName" + " --> " + propertyName
-  }
-  override def substitute(str: String): String =
-    MacroPropertyRecognitionPattern.recognizeAndSubstitute(str)
-
+case class MacroProperty(propertyName: String) extends RecognizableAndSubstitutable {
+  val recognitionPattern = MacroPropertyRecognitionPattern
 }
 object MacroPropertyRecognitionPattern extends RecognitionPattern {
   // The extraction method (mandatory)
@@ -26,7 +21,7 @@ object MacroPropertyRecognitionPattern extends RecognitionPattern {
   // macro_extract_property regex
   val regexPattern = """#macro_extract_property\((.*)\)""".r
 
-  def recognize(value: String): Option[RecognizeAndSubstituteAble] =
+  def recognize(value: String): Option[RecognizableAndSubstitutable] =
     doRecognize(value)
 
   private def doRecognize(value: String): Option[MacroProperty] = {
@@ -37,7 +32,7 @@ object MacroPropertyRecognitionPattern extends RecognitionPattern {
         None
     }
   }
-  def recognizeAndSubstitute(str: String): String = {
+  override def recognizeAndSubstitute(str: String): String = {
     def substituteString(toSubstitute: String): String =
       doRecognize(toSubstitute) match {
         case Some(MacroProperty(propertyName)) => "[" + propertyName + "]"
@@ -84,7 +79,9 @@ class TextMacroLikeExtractorSpec extends FlatSpec with ShouldMatchers {
   }
   "A text extractor using a MacroPropertyRecognitionPattern" should "substitute each MacroProperty from a text" in {
     val recog = RecognizableItemsExtractor(List(MacroPropertyRecognitionPattern))
-    val substituted = recog.substitute(textToAnalyze)
+    
+    val substituted = recog.makeSubstitutions(textToAnalyze)
+    
     assert(expectedSubstitutedText === substituted)
   }
 }
