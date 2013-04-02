@@ -20,18 +20,20 @@ The madeforall's extractor library is a Scala based library that is meant to hel
 
 Here are some steps:
 
-We create a RecognizableItemsExtractor object. We pass as a parameter an RecognitionPattern object
-Any RecognitionPattern object should:
-- implement the unapply extraction method (Scala based extractor)
-- mix in the RecognitionPattern trait
+We create a `RecognizableItemsExtractor` object. We pass as a parameter an `RecognitionPattern` object
+Any `RecognitionPattern` object should:
+- implement the `unapply` extraction method (Scala based extractor)
+- mix in the `RecognitionPattern` trait
   
 To support email recognition, we could do the followings:
 
+```scala
 case class Email(user: String, domain: String) extends Recognizable {
   override def toString() = {
     user + "@" + domain
   }
 }
+
 object EmailRecognitionPattern extends RecognitionPattern {
   // The extraction method
   def unapply(str: String): Option[(String, String)] = {
@@ -50,37 +52,38 @@ object EmailRecognitionPattern extends RecognitionPattern {
     }
   }
 }
+```
 
 Then, to extract all the emails from our text we could do the followings:
+
+```scala
 val textToAnalyze: String = "<<some content>>"
 val recog = RecognizableItemsExtractor(List(EmailRecognitionPattern))
 val emailList: List[Recognizable] = recog.analyzeText(textToAnalyze)
+```
 
 If we want to extract emails and links we can also add more recognition patterns 
 to the above RecognizableItemsExtractor.
 
+```scala
 RecognizableItemsExtractor(List(EmailRecognitionPattern, LinkRecognitionPattern))
 val emailAndLinkList: List[Recognizable] = recog.analyzeText(textToAnalyze)
+```
 
 The above emailAndLinkList list contains both emails and links.
-To filter out emails we could use the following filterByType function.
+To filter out emails we could use the following `filterByType` function.
 
+```scala
 val onlyEmailList = recog.filterByType[Email](emailAndLinkList)
+```
 
-Here is the definition of the RecognizableItemsExtractor's filterByType function:
+Here is the definition of the `RecognizableItemsExtractor`'s `filterByType` function:
 
-  def filterByType[T <: Recognizable](t: List[Recognizable])(implicit mf: Manifest[T]) =
-    t.filter(e => mf.erasure.isInstance(e))
+```scala
+def filterByType[T <: Recognizable](t: List[Recognizable])(implicit mf: Manifest[T]) =
+  t.filter(e => mf.erasure.isInstance(e))
+```
 
-It is based on Scala class manifest feature, that is helping the runtime 
-with the type information provided as hint by the Scala compiler. 
-Type erasure is still present in Scala like in Java. 
-The creators of Scala gave us this helpful manifest class support to overcome 
+It is based on Scala class manifest feature, that is helping the runtime  with the type information provided as hint by the Scala compiler. 
+Type erasure is still present in Scala like in Java. The creators of Scala gave us this helpful manifest class support to overcome 
 the JVM's type erasure limitations.
-
- 
-
-
-   
-   
-       
